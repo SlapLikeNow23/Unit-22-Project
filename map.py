@@ -4,14 +4,17 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import geopandas as gpd
+import csv
+import json
+import requests
 
 #%matplotlib inline
 
 df = pd.read_csv('/home/ruhit/Downloads/UTCs.csv')
 df.head()
 
-#Create map object
-m = folium.Map(location=[53.381130, -1.470085], zoom_start=12)
+#Create map objefolium join datact
+m = folium.Map(location=[53.381130, -1.470085], zoom_start=5)
 
 for index, row in df.iterrows():
     #print(row)
@@ -31,41 +34,43 @@ gdf.columns = ['country', 'country_code', 'geometry']
 gdf.head()
 '''
 
+#region_file = 'http:///home/ruhit/Downloads/Local_Authority_Districts_April_2019_Boundaries_UK_BUC.geojson'
+#regions = pd.read_csv()
+#print("regions", regions.head())
 
-url = 'https://opendata.arcgis.com/datasets/'
+
+url = 'https://opendata.arcgis.com/datasets'
 regions = f'{url}/bbb0e58b0be64cc1a1460aa69e33678f_0.geojson'
 
-folium.GeoJson(
-    regions,
-    name='geojson'
-).add_to(m)
+geo_json_data = json.loads(requests.get(regions).text)
 
 folium.LayerControl().add_to(m)
 
 
+df = pd.read_csv('/home/ruhit/Desktop/Unit 22 Map/Unit-22-Project/Prosperity1.csv')
+print("prosperity", df.head())
+
+p_data = pd.read_csv('/home/ruhit/Downloads/UTCs.csv')
+
+print("UTCs", p_data.head())
 
 
-'''
-#Global tooltip
-tooltip = 'Click for more info'
+
+m.choropleth(
+ geo_data = regions,
+ name='choropleth',
+ data=p_data,
+ columns=['LAU1 code', '1997'],
+ key_on='feature.lad19cd',
+ fill_color='YlGn',
+ fill_opacity=0.7,
+ line_opacity=0.2,
+)
+folium.LayerControl().add_to(m)
 
 
-#Create markers
-folium.Marker([53.381130, -1.570085],
-              popup='<strong>Location One</strong>',
-              tooltip=tooltip).add_to(m),
-folium.Marker([53.381130, -1.470085],
-              popup='<strong>Location Two</strong>',
-              tooltip=tooltip,
-              icon=folium.Icon(icon='cloud')).add_to(m),
-folium.Marker([53.381130, -1.370085],
-              popup='<strong>Location Three</strong>',
-              tooltip=tooltip,
-              icon=folium.Icon(color='purple')).add_to(m),
-folium.Marker([53.381130, -1.270085],
-              popup='<strong>Location Three</strong>',
-              tooltip=tooltip,
-              icon=folium.Icon(color='green', icon='leaf')).add_to(m)
-'''
+#in Local_Authority_Districts_April_2019_Boundaries_UK_BUC, join field name
+
+
 #Generate Map
 m.save('map.html')
