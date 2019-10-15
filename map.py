@@ -1,16 +1,6 @@
-import folium
+import folium, pandas as pd, matplotlib.pyplot as plt, matplotlib as mpl, seaborn as sns, numpy as np, geopandas as gpd, csv, json, requests
 from folium import plugins
-import pandas as pd
-import matplotlib.pyplot as plt
-import matplotlib as mpl
-import seaborn as sns
-import numpy as np
-import geopandas as gpd
-from shapely.geometry import Point
-from shapely.geometry import Polygon
-import csv
-import json
-import requests
+from shapely.geometry import Point, Polygon
 from folium.plugins import TimeSliderChoropleth
 from geopandas import GeoSeries, GeoDataFrame
 
